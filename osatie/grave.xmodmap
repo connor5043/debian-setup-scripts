@@ -1,0 +1,15 @@
+! Remap Right Alt to Mode_switch
+keycode 108 = Mode_switch
+
+! Map the vowel keys with Right Alt to their respective grave accented characters
+keysym a = a A agrave Agrave
+keysym e = e E egrave Egrave
+keysym i = i I igrave Igrave
+keysym o = o O ograve Ograve
+keysym u = u U ugrave Ugrave
+
+! Map the semicolon key with Right Alt to dead_diaeresis
+keysym semicolon = semicolon colon dead_diaeresis dead_diaeresis
+
+! Map Alt + ' to dead_doubleacute
+keysym apostrophe = apostrophe quotedbl dead_doubleacute dead_doubleacute
