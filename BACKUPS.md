@@ -5,4 +5,4 @@
 `bash backup-to-encrypted-remote.sh`
 
 ## Restoring
-`rclone copy -P encrypted-remote: ~`
+`rclone copy -P encrypted-backblaze:backups/~/ ~`
