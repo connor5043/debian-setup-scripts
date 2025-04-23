@@ -1,5 +1,34 @@
 #!/bin/bash
 
+# Budgie and Pluma settings
+
+gsettings set org.gnome.settings-daemon.peripherals.touchscreen orientation-lock true
+
+# Configure Budgie
+gsettings set org.gnome.shell.app-switcher current-workspace-only true
+gsettings set org.gnome.desktop.wm.keybindings switch-windows "['\<Alt\>Tab']"
+gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['\<Shift\>\<Alt\>Tab', '\<Alt\>Above_Tab']"
+gsettings set org.gnome.desktop.wm.keybindings switch-applications "[]"
+gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "[]"
+gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing false
+gsettings set org.gnome.desktop.privacy remember-app-usage false
+gsettings set org.gnome.desktop.privacy remember-recent-files false
+gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
+gsettings set org.gnome.desktop.interface clock-format 12h
+gsettings set org.gtk.settings.file-chooser clock-format 12h
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+gsettings set desktop.ibus.panel.show-icon-on-systray false # disable keyboard switcher
+gsettings set org.mate.pluma highlight-current-line true
+gsettings set org.mate.pluma display-line-numbers true
+gsettings set org.mate.pluma display-overview-map true
+
+dconf load /com/solus-project/budgie-panel/ < budgie-panel.ini
+dconf load /org/ubuntubudgie/plugins/budgie-hotcorners/ < budgie-corners.ini
+
+# Configure Pluma
+gsettings set org.mate.pluma color-scheme 'oblivion'
+gsettings set org.mate.pluma editor-font 'Atkinson Hyperlegible Next 15'
+
 # Define the directory to search
 firefox_dir="$HOME/.mozilla/firefox"
 
