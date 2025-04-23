@@ -30,7 +30,6 @@ sudo apt update
 # Install utilities
 sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 html2text && \
 gem install --user-install neocities && \
-curl -fsSL https://raw.githubusercontent.com/connor5043/Plin/refs/heads/main/install.sh | bash
 
 # zsh setup
 chsh -s /usr/bin/zsh
@@ -56,32 +55,6 @@ sudo apt install -y --no-install-recommends xinit budgie-desktop gnome-terminal
 sudo apt install -y budgie-applications-menu-applet budgie-hotcorners-applet budgie-previews
 sudo apt install -y sxhkd sxiv caja pluma pluma-plugin-terminal mate-calc nautilus
 sudo apt remove -y iio-sensor-proxy
-gsettings set org.gnome.settings-daemon.peripherals.touchscreen orientation-lock true
-
-# Configure Budgie settings
-gsettings set org.gnome.shell.app-switcher current-workspace-only true
-gsettings set org.gnome.desktop.wm.keybindings switch-windows "['\<Alt\>Tab']"
-gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['\<Shift\>\<Alt\>Tab', '\<Alt\>Above_Tab']"
-gsettings set org.gnome.desktop.wm.keybindings switch-applications "[]"
-gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "[]"
-gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing false
-gsettings set org.gnome.desktop.privacy remember-app-usage false
-gsettings set org.gnome.desktop.privacy remember-recent-files false
-gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
-gsettings set org.gnome.desktop.interface clock-format 12h
-gsettings set org.gtk.settings.file-chooser clock-format 12h
-gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
-gsettings set desktop.ibus.panel.show-icon-on-systray false # disable keyboard switcher
-gsettings set org.mate.pluma highlight-current-line true
-gsettings set org.mate.pluma display-line-numbers true
-gsettings set org.mate.pluma display-overview-map true
-
-# Configure Pluma
-gsettings set org.mate.pluma color-scheme 'oblivion'
-gsettings set org.mate.pluma editor-font 'Atkinson Hyperlegible Next 15'
-
-dconf load /com/solus-project/budgie-panel/ < budgie-panel.ini
-dconf load /org/ubuntubudgie/plugins/budgie-hotcorners/ < budgie-corners.ini
 
 # Install Osatie
 sudo mv osatie /opt/
@@ -96,6 +69,7 @@ sudo apt install -y mpv clementine xfburn guvcview puddletag ffmpeg gimp krita d
 
 # Install document software
 sudo apt install -y libreoffice-writer libreoffice-calc libreoffice-impress zathura-pdf-poppler zathura-djvu zathura-ps pandoc ocrmypdf asciidoctor
+curl -fsSL https://raw.githubusercontent.com/connor5043/Plin/refs/heads/main/install.sh | bash
 
 # Install Android software
 sudo apt install -y adb fastboot
