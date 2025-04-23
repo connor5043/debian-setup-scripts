@@ -9,6 +9,6 @@ Setup for Debian 12
     bash install.sh
 
 ## Post-installation
-    Open and close Firefox once without internet, then run firefox.sh
+    Open and close Firefox once without internet, then run postinst.sh
     add sxhkd to Budgie startup
     Gajim: Quit on close, auto-delete messages
