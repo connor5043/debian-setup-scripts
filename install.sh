@@ -25,15 +25,15 @@ Pin-Priority: -10
 sudo apt update
 
 # Install utilities
-sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmyscreen python3 html2text
-gem install --user-install neocities
+sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 html2text && \
+gem install --user-install neocities && \
 curl -fsSL https://raw.githubusercontent.com/connor5043/Plin/refs/heads/main/install.sh | bash
 
 # zsh setup
 chsh -s /usr/bin/zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-setopt EXTENDED_GLOB
+setopt EXTENDED_GLOB #TODO needs to be run in zsh
 for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
   ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
 done
@@ -82,10 +82,11 @@ dconf load /org/ubuntubudgie/plugins/budgie-hotcorners/ < budgie-corners.ini
 
 # Install Osatie
 sudo mv osatie /opt/
+mkdir -p ~/.config/sxhkd
 echo '
 control + space
   sh /opt/osatie/toggle_accent.sh
-' | sudo tee ~/.config/sxhkd/sxhkdrc
+' | tee ~/.config/sxhkd/sxhkdrc
 
 # Install media software
 sudo apt install -y mpv clementine xfburn guvcview puddletag ffmpeg gimp krita dia
@@ -98,6 +99,7 @@ sudo apt install -y adb fastboot
 
 # Install QOwnNotes
 SIGNED_BY='/etc/apt/keyrings/qownnotes.gpg'
+ARCHITECTURE="$(dpkg --print-architecture)"
 sudo mkdir -p "$(dirname "${SIGNED_BY}")"
 curl --silent --show-error --location http://download.opensuse.org/repositories/home:/pbek:/QOwnNotes/Debian_12/Release.key | gpg --dearmor | sudo tee "${SIGNED_BY}" > /dev/null
 sudo chmod u=rw,go=r "${SIGNED_BY}"
@@ -115,7 +117,7 @@ sudo apt install -y gajim
 # curl -O "https://cdn.zoom.us/prod/$(curl -s 'https://zoom.us/rest/download?os=linux' | grep -oP '(?<="version":")[^"]*' | head -1)/zoom_amd64.deb"
 curl -O https://cdn.zoom.us/prod/6.3.11.7212/zoom_amd64.deb # later versions seem to be broken
 sudo dpkg -i zoom_amd64.deb
-sudo apt -f install
+sudo apt -f -y install
 rm zoom_amd64.deb
 
 # Install virtualization software
