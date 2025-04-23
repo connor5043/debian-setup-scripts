@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/bin/zsh
+
+# ZSH config
+setopt EXTENDED_GLOB
+for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+done
+sed -i "s/zstyle ':prezto:module:prompt' theme 'sorin'/zstyle ':prezto:module:prompt' theme 'off'/" ~/.zpreztorc
 
 # Budgie and Pluma settings
 

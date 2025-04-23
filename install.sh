@@ -28,18 +28,13 @@ Pin-Priority: -10
 sudo apt update
 
 # Install utilities
-sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 html2text && \
-gem install --user-install neocities && \
+sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq
+gem install --user-install neocities
 
 # zsh setup
 chsh -s /usr/bin/zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-setopt EXTENDED_GLOB #TODO needs to be run in zsh
-for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-done
-sed -i "s/zstyle ':prezto:module:prompt' theme 'sorin'/zstyle ':prezto:module:prompt' theme 'off'/" ~/.zpreztorc
 
 # Install Atkinson Hyperlegible Next
 curl -L -O https://braileinstitute.box.com/shared/static/waaf5z9gfss6w6tf5118im5hhlwolacc.zip
@@ -164,7 +159,7 @@ echo "Generated root password: $ROOT_PASSWORD"
 echo "root:$ROOT_PASSWORD" | sudo chpasswd
 
 # Step 3: Remove yourself from the sudoers group
-sudo usermod -G "$(id -Gn | sed 's/sudo//g')" "$USER"
+sudo deluser "$USER" sudo
 
 # Inform the user
 echo "You have been removed from the sudoers group. Save the root password securely!"
