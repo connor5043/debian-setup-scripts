@@ -149,6 +149,10 @@ sudo apt install -y firefox
 
 # TODO for archive.org-downloader: python3-img2pdf, python3-pycryptodome python3-tqdm python3-requests
 
+# Fix networking
+sudo systemctl disable networking
+sudo systemctl enable NetworkManager
+
 # Set password for root (to be kept on paper) and remove user from sudoers
 
 # Step 1: Generate a random 32-character password

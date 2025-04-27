@@ -86,6 +86,11 @@ user_pref("privacy.fingerprintingProtection.overrides", "+AllTargets,-JSDateTime
 user_pref("full-screen-api.warning.timeout", 0);
 user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 user_pref("browser.tabs.hoverPreview.enabled", false);
+user_pref("browser.urlbar.suggest.history", false);
+user_pref("browser.urlbar.suggest.bookmark", false);
+user_pref("browser.urlbar.suggest.openpage", false);
+user_pref("browser.urlbar.suggest.topsites", false);
+user_pref("browser.urlbar.suggest.engines", false);
 EOF
                 echo "Preferences appended successfully."
 
