@@ -1,169 +1,171 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+# Function to disable Bluetooth
+disable_bluetooth() {
+    echo "Disabling Bluetooth..."
+    if /usr/bin/defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0; then
+        echo "Bluetooth disabled successfully. You may need to restart your Mac for changes to take effect."
+    else
+        echo "Failed to disable Bluetooth. Please check your permissions."
+    fi
+}
 
-sudo systemctl disable bluetooth
-sudo apt purge -y bluetooth bluez nano vim-common vim-tiny
-sudo apt autoremove -y --purge
+# Function to install Homebrew
+install_homebrew() {
+    echo "Checking if Homebrew is already installed..."
+    if command -v brew >/dev/null 2>&1; then
+        echo "Homebrew is already installed."
+    else
+        echo "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || {
+            echo "Failed to install Homebrew. Please check your internet connection or try again."
+            exit 1
+        }
+        echo "Homebrew installed successfully."
+    fi
+}
 
-# Install Microsoft fonts
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.9
-sudo sed -r -i 's/^deb(.*)$/deb\1 contrib/g' /etc/apt/sources.list
-sudo apt update
-sudo apt install -y ttf-mscorefonts-installer
-sudo mv /etc/apt/sources.list.9 /etc/apt/sources.list
-
-# yt-dlp
-echo "deb http://deb.debian.org/debian/ sid main" | sudo tee -a /etc/apt/sources.list # for yt-dlp
-echo '
-Package: *
-Pin: release n=bookworm
-Pin-Priority: 700
-
-Package: *
-Pin: release n=sid
-Pin-Priority: -10
-' | sudo tee /etc/apt/preferences
-sudo apt update
-
-# Install utilities
-sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq
-gem install --user-install neocities
-
-# zsh setup
-chsh -s /usr/bin/zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-
-# Install Atkinson Hyperlegible Next
-curl -L -O https://braileinstitute.box.com/shared/static/waaf5z9gfss6w6tf5118im5hhlwolacc.zip
-unzip waaf5z9gfss6w6tf5118im5hhlwolacc.zip
-mkdir -p ~/.local/share/fonts/otf/Atkinson_Hyperlegible_Next
-cp Atkinson\ Hyperlegible\ Next/*.otf ~/.local/share/fonts/otf/Atkinson_Hyperlegible_Next && fc-cache
-rm -r Atkinson\ Hyperlegible\ Next
-rm waaf5z9gfss6w6tf5118im5hhlwolacc.zip
-
-# Install the desktop
-sudo apt install -y lightdm
-sudo apt install -y --no-install-recommends xinit budgie-desktop gnome-terminal
-sudo apt install -y budgie-applications-menu-applet budgie-hotcorners-applet budgie-previews
-sudo apt install -y sxhkd sxiv caja pluma pluma-plugin-terminal mate-calc nautilus
-sudo apt remove -y iio-sensor-proxy
-
-# Install Osatie
-sudo mv osatie /opt/
-mkdir -p ~/.config/sxhkd
-echo '
-control + space
-  sh /opt/osatie/toggle_accent.sh
-' | tee ~/.config/sxhkd/sxhkdrc
-
-# Install media software
-sudo apt install -y mpv clementine xfburn guvcview puddletag ffmpeg gimp krita dia
-
-# Install document software
-sudo apt install -y libreoffice-writer libreoffice-calc libreoffice-impress zathura-pdf-poppler zathura-djvu zathura-ps pandoc ocrmypdf asciidoctor
-curl -fsSL https://raw.githubusercontent.com/connor5043/Plin/refs/heads/main/install.sh | bash
-
-# Install Android software
-sudo apt install -y adb fastboot
-
-# Install QOwnNotes
-SIGNED_BY='/etc/apt/keyrings/qownnotes.gpg'
-ARCHITECTURE="$(dpkg --print-architecture)"
-sudo mkdir -p "$(dirname "${SIGNED_BY}")"
-curl --silent --show-error --location http://download.opensuse.org/repositories/home:/pbek:/QOwnNotes/Debian_12/Release.key | gpg --dearmor | sudo tee "${SIGNED_BY}" > /dev/null
-sudo chmod u=rw,go=r "${SIGNED_BY}"
-echo "deb [arch=${ARCHITECTURE} signed-by=${SIGNED_BY}] http://download.opensuse.org/repositories/home:/pbek:/QOwnNotes/Debian_12/ /" | sudo tee /etc/apt/sources.list.d/qownnotes.list > /dev/null
-sudo apt update
-sudo apt install -y qownnotes
-
-# Install network software
-sudo apt install -y vnstat transmission
-sudo systemctl enable vnstat
-
-# Install communication software
-sudo apt install -y gajim
-
-# curl -O "https://cdn.zoom.us/prod/$(curl -s 'https://zoom.us/rest/download?os=linux' | grep -oP '(?<="version":")[^"]*' | head -1)/zoom_amd64.deb"
-curl -O https://cdn.zoom.us/prod/6.3.11.7212/zoom_amd64.deb # later versions seem to be broken
-sudo dpkg -i zoom_amd64.deb
-sudo apt -f -y install
-rm zoom_amd64.deb
-
-# Install virtualization software
-sudo apt install -y qemu-utils qemu-system-x86 qemu-system-gui
-
-# Install games
-sudo apt install -y gnujump libqt5core5a libqt5network5 libqt5gui5 # dependencies for MultiMC
-echo "NoDisplay=true" | sudo tee -a /usr/share/applications/gnujump.desktop
-curl -O $(curl https://multimc.org/ | grep .deb | sed -n 's/.*href="\([^"]*multimc_.*\.deb\)".*/\1/p')
-sudo dpkg -i multimc*.deb
-rm multimc*.deb
-
-# Install latest Oracle Java
-curl -O $(curl -s https://www.oracle.com/java/technologies/downloads/ | grep -oP 'https://.*?\.deb' | head -n 1)
-sudo dpkg -i jdk*bin.deb
-rm jdk*bin.deb
-
-# yt-dlp
-sudo apt install -y -t sid yt-dlp
-
-# Install Firefox
-sudo install -d -m 0755 /etc/apt/keyrings
-curl -s https://packages.mozilla.org/apt/repo-signing-key.gpg | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
-
-gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | \
-awk '/pub/ {
-    getline; 
-    gsub(/^ +| +$/, ""); 
-    if ($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") {
-        print "\nThe key fingerprint matches (" $0 ").\n";
-    } else {
-        print "\nVerification failed: the fingerprint (" $0 ") does not match the expected one.\n";
-        exit 1;
+# Function to install packages with Homebrew
+install_packages() {
+    echo "Installing packages with Homebrew..."
+    brew install curl ne remind htop ncdu lynx fastfetch trash-cli rclone claws-mail unzip p7zip ruby python python-tk pyqt \
+        html2text jq emacs mpv ffmpeg pandoc ocrmypdf asciidoctor vnstat yt-dlp || {
+        echo "Failed to install some packages. Please check the error messages."
+        exit 1
     }
-}'
+    echo "All requested packages installed successfully."
 
-if [ $? -ne 0 ]; then
-    echo "Fingerprint verification failed. Exiting script."
-    exit 1
-fi
+    echo "Installing Python packages pyparsing and mutagen using pip..."
+    pip3 install pyparsing mutagen || {
+        echo "Failed to install Python packages. Please check your Python and pip installation."
+        exit 1
+    }
+    echo "Python packages installed successfully."
+}
 
-echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null
+# Function to install apps from the cask tap
+install_cask_apps() {
+    echo "Installing GUI applications with Homebrew cask..."
+    brew tap homebrew/cask-fonts
+    brew install --cask telegram-desktop gimp krita libreoffice transmission quodlibet qownnotes zoom multimc oracle-jdk \
+        font-atkinson-hyperlegible-next || {
+        echo "Failed to install some cask applications. Please check the error messages."
+        exit 1
+    }
+    echo "All requested cask applications installed successfully."
+}
 
-echo '
-Package: *
-Pin: origin packages.mozilla.org
-Pin-Priority: 1000
-' | sudo tee /etc/apt/preferences.d/mozilla
+# Function to install the 'neocities' Ruby gem
+install_neocities_gem() {
+    echo "Installing the 'neocities' Ruby gem with --user-install..."
+    if gem install neocities --user-install; then
+        echo "The 'neocities' gem installed successfully."
+    else
+        echo "Failed to install the 'neocities' gem. Please check your Ruby installation or permissions."
+        exit 1
+    fi
+}
 
-sudo apt update
+# Function to set up Zsh with Oh My Zsh and Prezto
+setup_zsh() {
+    echo "Setting up Zsh with Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || {
+        echo "Failed to install Oh My Zsh. Please check your internet connection or try again."
+        exit 1
+    }
+    echo "Oh My Zsh installed successfully."
 
-sudo apt install -y firefox
+    echo "Cloning Prezto repository..."
+    git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto" || {
+        echo "Failed to clone Prezto repository. Please check your Git installation or internet connection."
+        exit 1
+    }
+    echo "Prezto repository cloned successfully."
+}
 
-# TODO Set up unattended upgrades
+# Function to install Zathura and its plugins
+install_zathura() {
+    echo "Installing Zathura and its plugins..."
+    brew tap homebrew-zathura/zathura || {
+        echo "Failed to tap the Zathura repository. Please check your internet connection."
+        exit 1
+    }
 
-# TODO vpn + socks5
+    brew install zathura zathura-pdf-mupdf zathura-djvu zathura-ps || {
+        echo "Failed to install Zathura or its plugins. Please check for errors."
+        exit 1
+    }
+    echo "Zathura and its plugins installed successfully."
+}
 
-# TODO for archive.org-downloader: python3-img2pdf, python3-pycryptodome python3-tqdm python3-requests
+# Function to download and install Threema Desktop
+install_threema() {
+    echo "Installing Threema Desktop..."
+    THREEMA_URL="https://releases.threema.ch/web-electron/v1/release/Threema-Latest.dmg"
+    THREEMA_DMG="Threema-Latest.dmg"
 
-# Fix networking
-sudo systemctl disable networking
-sudo systemctl enable NetworkManager
+    echo "Downloading Threema Desktop..."
+    curl -L -O "$THREEMA_URL" || {
+        echo "Failed to download Threema Desktop. Please check your internet connection."
+        exit 1
+    }
 
-# Set password for root (to be kept on paper) and remove user from sudoers
+    echo "Mounting Threema DMG..."
+    hdiutil attach "$THREEMA_DMG" || {
+        echo "Failed to mount Threema DMG. Please check the downloaded file."
+        exit 1
+    }
 
-# Step 1: Generate a random 32-character password
-ROOT_PASSWORD=$(openssl rand -base64 32 | head -c 32)
-echo "Generated root password: $ROOT_PASSWORD"
+    echo "Installing Threema Desktop..."
+    cp -R /Volumes/Threema\ Desktop/Threema\ Desktop.app /Applications || {
+        echo "Failed to copy Threema Desktop to the Applications folder."
+        exit 1
+    }
 
-# Step 2: Set the root password
-echo "root:$ROOT_PASSWORD" | sudo chpasswd
+    echo "Cleaning up..."
+    hdiutil detach /Volumes/Threema\ Desktop || {
+        echo "Failed to unmount Threema DMG."
+    }
+    rm "$THREEMA_DMG"
 
-# Step 3: Remove yourself from the sudoers group
-sudo deluser "$USER" sudo
+    echo "Threema Desktop installed successfully."
+}
 
-# Inform the user
-echo "You have been removed from the sudoers group. Save the root password securely!"
+# Function to install Puddletag
+install_puddletag() {
+    echo "Installing Puddletag..."
+    curl -L -o puddletag-latest.tar.gz "$(curl -s https://api.github.com/repos/puddletag/puddletag/releases/latest | grep "tarball_url" | cut -d '"' -f 4)" || {
+        echo "Failed to download Puddletag. Please check your internet connection."
+        exit 1
+    }
+
+    mkdir -p puddletag-temp
+    tar -xzf puddletag-latest.tar.gz -C puddletag-temp || {
+        echo "Failed to extract the Puddletag archive."
+        exit 1
+    }
+
+    mkdir -p ~/.opt/puddletag
+    mv puddletag-temp/$(ls puddletag-temp)/* ~/.opt/puddletag || {
+        echo "Failed to move Puddletag files to the target directory."
+        exit 1
+    }
+
+    echo "Cleaning up temporary files..."
+    rm -rf puddletag-latest.tar.gz puddletag-temp
+
+    echo "Puddletag installed successfully."
+}
+
+# Main script execution
+disable_bluetooth
+install_homebrew
+install_packages
+install_cask_apps
+install_neocities_gem
+setup_zsh
+install_zathura
+install_threema
+install_puddletag
+
+echo "Script execution completed."
