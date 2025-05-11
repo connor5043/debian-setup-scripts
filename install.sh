@@ -28,7 +28,7 @@ Pin-Priority: -10
 sudo apt update
 
 # Install utilities
-sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq build-essential golang todotxt-cli
+sudo apt install -y curl remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq build-essential golang todotxt-cli
 gem install --user-install neocities
 
 # zsh setup
@@ -74,19 +74,6 @@ sudo systemctl reload nginx
 echo "127.0.0.1 www.reddit.com" | sudo tee -a /etc/hosts
 # TODO disable network.stricttransportsecurity.preloadlist
 
-#sudo update-alternatives --set iptables /usr/sbin/iptables-nft
-#sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
-#sudo openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
-#    -keyout /etc/squid/squid.key \
-#    -out /etc/squid/squid.crt
-#sudo cat /etc/squid/squid.key /etc/squid/squid.crt > /etc/squid/squid.pem
-#sudo chmod 600 /etc/squid/squid.pem
-#sudo cp /etc/squid/squid.crt /usr/local/share/ca-certificates/squid.crt
-#sudo /usr/sbin/update-ca-certificates
-#sudo /usr/lib/squid/security_file_certgen -c -s /var/spool/squid/ssl_db -M 4MB
-#curl -s https://raw.githubusercontent.com/connor5043/debian-setup-scripts/refs/heads/main/squid.conf | sed "s#~/#/home/$USER/#g" | sudo tee /etc/squid/squid.conf > /dev/null
-#curl https://raw.githubusercontent.com/connor5043/debian-setup-scripts/refs/heads/main/rewrite_script.sh -o ~/.local/bin/rewrite_script.sh
-#chmod +x ~/.local/bin/rewrite_script.sh
 # TODO  update github files
 # TODO install proxy.pac with postinst
 # TODO firefox cert
@@ -105,7 +92,7 @@ control + space
 ' | tee ~/.config/sxhkd/sxhkdrc
 
 # Install media software
-sudo apt install -y mpv clementine xfburn guvcview puddletag ffmpeg gimp krita dia
+sudo apt install -y mpv clementine xfburn guvcview puddletag ffmpeg krita dia
 
 # Install document software
 sudo apt install -y libreoffice-writer libreoffice-calc libreoffice-impress zathura-pdf-poppler zathura-djvu zathura-ps pandoc ocrmypdf asciidoctor
@@ -114,22 +101,12 @@ curl -fsSL https://raw.githubusercontent.com/connor5043/Plin/refs/heads/main/ins
 # Install Android software
 sudo apt install -y adb fastboot
 
-# Install QOwnNotes
-SIGNED_BY='/etc/apt/keyrings/qownnotes.gpg'
-ARCHITECTURE="$(dpkg --print-architecture)"
-sudo mkdir -p "$(dirname "${SIGNED_BY}")"
-curl --silent --show-error --location http://download.opensuse.org/repositories/home:/pbek:/QOwnNotes/Debian_12/Release.key | gpg --dearmor | sudo tee "${SIGNED_BY}" > /dev/null
-sudo chmod u=rw,go=r "${SIGNED_BY}"
-echo "deb [arch=${ARCHITECTURE} signed-by=${SIGNED_BY}] http://download.opensuse.org/repositories/home:/pbek:/QOwnNotes/Debian_12/ /" | sudo tee /etc/apt/sources.list.d/qownnotes.list > /dev/null
-sudo apt update
-sudo apt install -y qownnotes
-
 # Install network software
 sudo apt install -y vnstat transmission
 sudo systemctl enable vnstat
 
 # Install communication software
-sudo apt install -y gajim telegram-desktop libvpc-dev
+sudo apt install -y telegram-desktop libvpc-dev
 curl -LO "https://github.com/BlueBubblesApp/bluebubbles-app/releases/download/v1.12.2%2B55/bluebubbles-linux-x86_64.tar"
 mkdir -p ~/.local/opt/bluebubbles
 tar xf bluebubbles-linux-x86_64.tar -C ~/.local/opt/bluebubbles
@@ -138,8 +115,8 @@ rm bluebubbles-linux-x86_64.tar
 # TODO waydroid threema
 # TODO anki to ~/.local/opt
 
-# curl -O "https://cdn.zoom.us/prod/$(curl -s 'https://zoom.us/rest/download?os=linux' | grep -oP '(?<="version":")[^"]*' | head -1)/zoom_amd64.deb"
-curl -O https://cdn.zoom.us/prod/6.3.11.7212/zoom_amd64.deb # later versions seem to be broken
+curl -O "https://cdn.zoom.us/prod/$(curl -s 'https://zoom.us/rest/download?os=linux' | grep -oP '(?<="version":")[^"]*' | head -1)/zoom_amd64.deb"
+#curl -O https://cdn.zoom.us/prod/6.3.11.7212/zoom_amd64.deb # later versions seem to be broken
 sudo dpkg -i zoom_amd64.deb
 sudo apt -f -y install
 rm zoom_amd64.deb
@@ -205,17 +182,3 @@ sudo apt install -y firefox
 sudo systemctl disable networking
 sudo systemctl enable NetworkManager
 
-# Set password for root (to be kept on paper) and remove user from sudoers
-
-# Step 1: Generate a random 32-character password
-ROOT_PASSWORD=$(openssl rand -base64 32 | head -c 32)
-echo "Generated root password: $ROOT_PASSWORD"
-
-# Step 2: Set the root password
-echo "root:$ROOT_PASSWORD" | sudo chpasswd
-
-# Step 3: Remove yourself from the sudoers group
-sudo deluser "$USER" sudo
-
-# Inform the user
-echo "You have been removed from the sudoers group. Save the root password securely!"
