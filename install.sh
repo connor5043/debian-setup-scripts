@@ -28,7 +28,7 @@ Pin-Priority: -10
 sudo apt update
 
 # Install utilities
-sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq
+sudo apt install -y curl ne remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq build-essential golang todotxt-cli
 gem install --user-install neocities
 
 # zsh setup
@@ -49,7 +49,52 @@ sudo apt install -y lightdm
 sudo apt install -y --no-install-recommends xinit budgie-desktop gnome-terminal
 sudo apt install -y budgie-applications-menu-applet budgie-hotcorners-applet budgie-previews
 sudo apt install -y sxhkd sxiv caja pluma pluma-plugin-terminal mate-calc nautilus
+sudo apt install -y --no-install-recommends emacs
+mkdir -p ~/.emacs.d
+cd ~/.emacs.d
+git clone -b master --single-branch https://github.com/ergoemacs/ergoemacs-mode.git
+cd ~
+
 sudo apt remove -y iio-sensor-proxy
+
+# Proxy for redirections
+sudo apt install -y nginx
+sudo rm /etc/nginx/sites-enabled/default
+sudo rm /etc/nginx/sites-available/default
+sudo cp reddit_redirect /etc/nginx/sites-available/reddit_redirect # TODO curl
+#sudo openssl req -new -newkey rsa:2048 -nodes -keyout /etc/nginx/selfsigned.key -out /etc/nginx/selfsigned.csr
+#echo "basicConstraints=CA:FALSE" > /tmp/basic_constraints.cnf
+#sudo openssl x509 -req -days 3650 -in /etc/nginx/selfsigned.csr -signkey /etc/nginx/selfsigned.key -out /etc/nginx/selfsigned.crt -extfile /tmp/basic_constraints.cnf
+#rm /tmp/basic_constraints.cnf
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/nginx/selfsigned.key \
+    -out /etc/nginx/selfsigned.crt
+sudo ln -s /etc/nginx/sites-available/reddit_redirect /etc/nginx/sites-enabled/default
+sudo systemctl reload nginx
+echo "127.0.0.1 www.reddit.com" | sudo tee -a /etc/hosts
+# TODO disable network.stricttransportsecurity.preloadlist
+
+#sudo update-alternatives --set iptables /usr/sbin/iptables-nft
+#sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
+#sudo openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
+#    -keyout /etc/squid/squid.key \
+#    -out /etc/squid/squid.crt
+#sudo cat /etc/squid/squid.key /etc/squid/squid.crt > /etc/squid/squid.pem
+#sudo chmod 600 /etc/squid/squid.pem
+#sudo cp /etc/squid/squid.crt /usr/local/share/ca-certificates/squid.crt
+#sudo /usr/sbin/update-ca-certificates
+#sudo /usr/lib/squid/security_file_certgen -c -s /var/spool/squid/ssl_db -M 4MB
+#curl -s https://raw.githubusercontent.com/connor5043/debian-setup-scripts/refs/heads/main/squid.conf | sed "s#~/#/home/$USER/#g" | sudo tee /etc/squid/squid.conf > /dev/null
+#curl https://raw.githubusercontent.com/connor5043/debian-setup-scripts/refs/heads/main/rewrite_script.sh -o ~/.local/bin/rewrite_script.sh
+#chmod +x ~/.local/bin/rewrite_script.sh
+# TODO  update github files
+# TODO install proxy.pac with postinst
+# TODO firefox cert
+
+sudo /usr/sbin/iptables -t nat -A OUTPUT -p tcp --dport 443 -d www.reddit.com -j REDIRECT --to-port 3128
+sudo /usr/sbin/sysctl -w net.ipv4.ip_forward=1
+# TODO setup proxy on firefox 127.0.0.1:3128
+
 
 # Install Osatie
 sudo mv osatie /opt/
@@ -84,7 +129,14 @@ sudo apt install -y vnstat transmission
 sudo systemctl enable vnstat
 
 # Install communication software
-sudo apt install -y gajim
+sudo apt install -y gajim telegram-desktop libvpc-dev
+curl -LO "https://github.com/BlueBubblesApp/bluebubbles-app/releases/download/v1.12.2%2B55/bluebubbles-linux-x86_64.tar"
+mkdir -p ~/.local/opt/bluebubbles
+tar xf bluebubbles-linux-x86_64.tar -C ~/.local/opt/bluebubbles
+rm bluebubbles-linux-x86_64.tar
+# TODO Desktop file
+# TODO waydroid threema
+# TODO anki to ~/.local/opt
 
 # curl -O "https://cdn.zoom.us/prod/$(curl -s 'https://zoom.us/rest/download?os=linux' | grep -oP '(?<="version":")[^"]*' | head -1)/zoom_amd64.deb"
 curl -O https://cdn.zoom.us/prod/6.3.11.7212/zoom_amd64.deb # later versions seem to be broken
