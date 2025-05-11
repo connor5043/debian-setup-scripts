@@ -28,7 +28,7 @@ Pin-Priority: -10
 sudo apt update
 
 # Install utilities
-sudo apt install -y curl remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq build-essential golang todotxt-cli
+sudo apt install -y curl remind htop ncdu lynx neofetch zsh trash-cli alarm-clock-applet rclone oathtool keepassxc claws-mail claws-mail-fancy-plugin claws-mail-attach-warner netselect unzip unrar-free p7zip-full ruby-full recordmydesktop python3 python3-tk html2text jq build-essential golang todotxt-cli ddate
 gem install --user-install neocities
 
 # zsh setup
