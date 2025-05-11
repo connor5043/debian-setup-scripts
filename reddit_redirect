@@ -1,0 +1,15 @@
+server {
+    listen 127.0.0.1:443 ssl;
+    server_name www.reddit.com;
+
+    ssl_certificate /etc/nginx/selfsigned.crt;
+    ssl_certificate_key /etc/nginx/selfsigned.key;
+    
+    location ~* ^/(media|gallery|settings) {
+        return 403;
+    }
+    
+    location / {
+        return 301 https://old.reddit.com$request_uri;
+    }
+}

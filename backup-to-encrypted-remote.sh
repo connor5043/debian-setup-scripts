@@ -11,7 +11,9 @@ BACKUP_PATHS=(
   "~/.config/keepassxc"
   "~/.config/libreoffice"
   "~/.zshrc"
-  "~/.zshrc"
+  "~/.emacs"
+  "~/.todo-txt"
+  "~/.local/share/streaks"
 )
 
 REMOTE_BACKUP_DIR="$ENCRYPTED_REMOTE_NAME:backups"

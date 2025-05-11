@@ -91,6 +91,11 @@ user_pref("browser.urlbar.suggest.bookmark", false);
 user_pref("browser.urlbar.suggest.openpage", false);
 user_pref("browser.urlbar.suggest.topsites", false);
 user_pref("browser.urlbar.suggest.engines", false);
+user_pref("privacy.clearOnShutdown_v2.browsingHistoryAndDownloads", false);
+user_pref("places.history.expiration.max_pages", 10000);
+user_pref("places.history.expiration.transient_current_max_pages", 10000);
+user_pref("layout.css.visited_links_enabled", false);
+user_pref("media.videocontrols.picture-in-picture.enabled", false);
 EOF
                 echo "Preferences appended successfully."
 
